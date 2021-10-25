@@ -19,12 +19,20 @@ void Board::paintGL() {
 }
 
 void Board::paintUI() {
-  // Parent class will show fullscreen button and FPS meter
+  // Parent class will show fullscreen button and FPS meter;
   // abcg::OpenGLWindow::paintUI();
-  static bool enabled{true};
-  ImGui::Checkbox("Some option", &enabled);
-  fmt::print("The checkbox is {}\n", enabled ? "enabled" : "disabled");
-  ImGui::Text("Application is running");
+  ImGui::ShowDemoWindow();
 
+    // static bool use_work_area = true;
+    // static ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar;
 
+    // // full screen windown
+    // const ImGuiViewport* viewport = ImGui::GetMainViewport();
+    // ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
+    // ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
+
+    // if (ImGui::Begin("Game", NULL, flags)){
+    //   printf("flags: %d", flags);
+    // }
+    // ImGui::End();
 }
