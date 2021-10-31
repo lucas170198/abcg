@@ -7,10 +7,13 @@ enum class State {Playing, GameOver};
 
 enum class Position{Left, Midle, Rigth};
 
+enum class Level {Easy, Medium, Hard};
+
 struct GameData {
     State m_state{State::Playing};
     Position m_mainCarPos{Position::Midle};
-    int level{0}; //should control the number of cars in the road and the speed for this cars
+    Level level{Level::Easy};
+    int points{0};
 };
 
 #endif

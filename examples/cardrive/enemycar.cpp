@@ -20,6 +20,23 @@ float EnemyCar::mapPositionToXCord(Position pos) {
     }
 }
 
+float EnemyCar::enemyVelocity(GameData &gameData){
+    switch (gameData.level){
+    case Level::Easy:
+        return 1.0f;
+        break;
+    case Level::Medium:
+        return 2.0f;
+        break;
+    case Level::Hard:
+        return 2.5f;
+        break;
+    default:
+        throw abcg::Exception("Invalid level");
+        break;
+    }
+}
+
 void EnemyCar::initializeGL(GLuint program) {
     terminateGL();
 
@@ -149,15 +166,17 @@ void EnemyCar::terminateGL(){
     abcg::glDeleteVertexArrays(1, &m_vao);
 }
 
-void EnemyCar::update(const GameData &gameData, float deltaTime) {
+void EnemyCar::update(GameData &gameData, float deltaTime) {
+    if(gameData.m_state != State::Playing) return;
     //end of screen
     if(m_translation.y <= -1.5f){
         auto &re{m_randomEngine};
         const int randomEnumIndex = m_randomDist(re);
+        gameData.points += 10;
         m_translation.x =  mapPositionToXCord(static_cast<Position>(randomEnumIndex));
         m_translation.y = initialyPos;
     }
     else{
-        m_translation.y -= 0.5f * deltaTime;  // TODO: add level here
+        m_translation.y -= (0.5f * deltaTime) * enemyVelocity(gameData);  // TODO: add level here
     }
 }

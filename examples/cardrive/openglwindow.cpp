@@ -32,6 +32,13 @@ void OpenGLWindow::positionStateMachine(Input in){
     }
 }
 
+void OpenGLWindow::levelUp(){
+    if(m_gameData.points >= 50 && m_gameData.level == Level::Easy)
+        m_gameData.level = Level::Medium;
+    else if(m_gameData.points >= 100 &&  m_gameData.level == Level::Medium)
+        m_gameData.level = Level::Hard;
+}
+
 void OpenGLWindow::handleEvent(SDL_Event &event){
     if (event.type == SDL_KEYUP){
         if(event.key.keysym.sym == SDLK_LEFT){
@@ -49,7 +56,7 @@ void OpenGLWindow::initializeGL(){
     ImGuiIO &io{ImGui::GetIO()};
     const std::string fontFileName{"Inconsolata-Medium.ttf"};
     auto fileName{getAssetsPath() + fontFileName};
-    m_font = io.Fonts->AddFontFromFileTTF(fileName.c_str(), 60.0f);
+    m_font = io.Fonts->AddFontFromFileTTF(fileName.c_str(), 20.0f);
 
     // load GPU programing for Vertex and frag
     const std::string vertexShadderFile{"objects.vert"};
@@ -72,11 +79,9 @@ void OpenGLWindow::initializeGL(){
 
 void OpenGLWindow::restart(){
     m_gameData.m_state = State::Playing;
-    glm::vec2 L_road = glm::vec2{-0.35f, 0};
-    glm::vec2 R_road = glm::vec2{0.35f, 0};
+    m_gameData.points = 0;
+    m_gameData.level = Level::Easy;
     m_mainCar.initializeGL(m_objectsProgram);
-    // m_roadr.initializeGL(m_objectsProgram, R_road);
-    // m_roadl.initializeGL(m_objectsProgram, L_road);
     m_enemyCars.clear();
     m_enemyCars.resize(1); //TODO: fix me
     for(EnemyCar &enemyCar : m_enemyCars){
@@ -99,7 +104,10 @@ void OpenGLWindow::update(){
         enemyCar.update(m_gameData, deltaTime);
     }
 
-    checkCollisions();
+    if(m_gameData.m_state == State::Playing)
+        checkCollisions();
+    
+    levelUp();
 }
 
 void OpenGLWindow::paintGL() {
@@ -109,8 +117,6 @@ void OpenGLWindow::paintGL() {
   abcg::glViewport(0, 0, m_viewportWidth, m_viewportHeight);
 
   m_mainCar.paintGL(m_gameData);
-  // m_roadl.paintGL(m_gameData);
-  // m_roadr.paintGL(m_gameData);
   for(EnemyCar &enemyCar : m_enemyCars){
       enemyCar.paintGL(m_gameData);
   }
@@ -133,6 +139,8 @@ void OpenGLWindow::paintUI() {
 
     if (m_gameData.m_state == State::GameOver){
       ImGui::Text("Game Over!");
+      ImGui::Text("Total points: %d", m_gameData.points);
+
     }
 
     ImGui::PopFont();
@@ -151,8 +159,6 @@ void OpenGLWindow::terminateGL() {
   abcg::glDeleteProgram(m_objectsProgram);
 
   m_mainCar.terminateGL();
-  m_roadl.terminateGL();
-  m_roadr.terminateGL();
   for(EnemyCar &enemyCar : m_enemyCars){
       enemyCar.terminateGL();
   }

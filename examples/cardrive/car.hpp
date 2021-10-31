@@ -7,7 +7,6 @@
 
 class OpenGLWindow;
 class EnemyCar;
-class Road;
 
 class Car {
  public:
@@ -20,7 +19,6 @@ class Car {
 
  private:
   friend EnemyCar;
-  friend Road;
   friend OpenGLWindow;
 
   GLuint m_program{};

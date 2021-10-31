@@ -14,8 +14,10 @@ class EnemyCar {
   void paintGL(const GameData &gameData);
   void terminateGL();
 
-  void update(const GameData &gameData, float deltaTime);
+  void update(GameData &gameData, float deltaTime);
   float mapPositionToXCord(Position pos);
+  float enemyVelocity(GameData &gameData);
+
 
  private:
   friend OpenGLWindow;

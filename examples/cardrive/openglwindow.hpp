@@ -7,7 +7,6 @@
 #include <list>
 #include "abcg.hpp"
 #include "car.hpp"
-#include "road.hpp"
 #include "enemycar.hpp"
 #include "gamedata.hpp"
 
@@ -29,8 +28,6 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   GameData m_gameData;
 
   Car m_mainCar;
-  Road m_roadl; //line road for left side
-  Road m_roadr; //line road for rigth side
   std::list<EnemyCar> m_enemyCars;
 
 
@@ -43,6 +40,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
   void restart();
   void update();
   void positionStateMachine(Input in);
+  void levelUp();
   void checkCollisions();
 };
 
