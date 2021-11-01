@@ -33,12 +33,12 @@ class EnemyCar {
 
   glm::vec4 m_color{1};
   float m_scale{0.125f};
-  const float initialyPos = 1.0f; //start outside of the screen
-  glm::vec2 m_translation{glm::vec2{0, initialyPos}};
+  glm::vec2 m_translation{glm::vec2(0)};
   glm::vec2 m_velocity{glm::vec2(0)};
 
   std::default_random_engine m_randomEngine;
-  std::uniform_int_distribution<int> m_randomDist{0, 2}; // random choose the track started by the enemy
+  std::uniform_int_distribution<int> m_trackDist{0, 2}; // random choose the track started by the enemy
+  std::uniform_real_distribution<float> m_initialYPosDist{1.0f, 3.0f};
 
   Position m_carPorsition;
 };

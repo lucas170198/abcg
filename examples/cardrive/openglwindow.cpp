@@ -66,7 +66,7 @@ void OpenGLWindow::initializeGL(){
 
     abcg::glClearColor(0, 0, 0, 1); // color to clean the screen beteween frames
 
-    #if !defined(__EMASCRIPTEN__)
+    #if !defined(__EMSCRIPTEN__)
         abcg::glEnable(GL_PROGRAM_POINT_SIZE);
     #endif
 
@@ -83,7 +83,7 @@ void OpenGLWindow::restart(){
     m_gameData.level = Level::Easy;
     m_mainCar.initializeGL(m_objectsProgram);
     m_enemyCars.clear();
-    m_enemyCars.resize(1); //TODO: fix me
+    m_enemyCars.resize(3);
     for(EnemyCar &enemyCar : m_enemyCars){
         enemyCar.initializeGL(m_objectsProgram);
     }
@@ -117,6 +117,7 @@ void OpenGLWindow::paintGL() {
   abcg::glViewport(0, 0, m_viewportWidth, m_viewportHeight);
 
   m_mainCar.paintGL(m_gameData);
+
   for(EnemyCar &enemyCar : m_enemyCars){
       enemyCar.paintGL(m_gameData);
   }

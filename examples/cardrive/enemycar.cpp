@@ -29,7 +29,7 @@ float EnemyCar::enemyVelocity(GameData &gameData){
         return 2.0f;
         break;
     case Level::Hard:
-        return 2.5f;
+        return 3.5f;
         break;
     default:
         throw abcg::Exception("Invalid level");
@@ -48,9 +48,12 @@ void EnemyCar::initializeGL(GLuint program) {
         std::chrono::steady_clock::now().time_since_epoch().count());
 
     auto &re{m_randomEngine};
-    const int randomEnumIndex = m_randomDist(re);
+    const int randomEnumIndex = m_trackDist(re);
     float xInitalCord = mapPositionToXCord(static_cast<Position>(randomEnumIndex));  // random choose the track
-    m_translation = glm::vec2{xInitalCord, initialyPos};
+
+    auto &re2{m_randomEngine};
+    const float randomInitialY = m_initialYPosDist(re2);
+    m_translation = glm::vec2{xInitalCord, randomInitialY};
     m_velocity = glm::vec2(0);
 
     std::array<glm::vec2, 24> positions{
@@ -171,10 +174,11 @@ void EnemyCar::update(GameData &gameData, float deltaTime) {
     //end of screen
     if(m_translation.y <= -1.5f){
         auto &re{m_randomEngine};
-        const int randomEnumIndex = m_randomDist(re);
+        auto &re2{m_randomEngine};
+        const int randomEnumIndex = m_trackDist(re);
         gameData.points += 10;
         m_translation.x =  mapPositionToXCord(static_cast<Position>(randomEnumIndex));
-        m_translation.y = initialyPos;
+        m_translation.y = m_initialYPosDist(re2);
     }
     else{
         m_translation.y -= (0.5f * deltaTime) * enemyVelocity(gameData);  // TODO: add level here
