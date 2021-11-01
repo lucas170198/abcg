@@ -58,6 +58,10 @@ void OpenGLWindow::initializeGL(){
     auto fileName{getAssetsPath() + fontFileName};
     m_font = io.Fonts->AddFontFromFileTTF(fileName.c_str(), 20.0f);
 
+    if (m_font == nullptr) {
+        throw abcg::Exception{abcg::Exception::Runtime("Cannot load font file")};
+    }
+
     // load GPU programing for Vertex and frag
     const std::string vertexShadderFile{"objects.vert"};
     const std::string fragShadderFile{"objects.frag"};
