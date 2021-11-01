@@ -2,7 +2,9 @@
 
 **Nome** : Lucas Silva Amorim
 
-**RA** :: 11201720968
+**RA** : 11201720968
+
+**Link vídeo de apresentação**: https://youtu.be/G9Uhh9ErvT8
 
 ## Infinite Cardrive
 ### Descrição da Aplicação
@@ -62,4 +64,3 @@ A função `OpenGLWindow::checkCollisions` é responsável por verificar se o ca
         }
     }
  ```
-
