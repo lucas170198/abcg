@@ -39,7 +39,7 @@ void Model::createBuffers() {
   abcg::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Model::loadObj(std::string_view path, bool standardize) {
+void Model::loadObj(std::string_view path) {
   tinyobj::ObjReader reader;
 
   if (!reader.ParseFromFile(path.data())) {
@@ -92,18 +92,14 @@ void Model::loadObj(std::string_view path, bool standardize) {
     }
   }
 
-  if (standardize) {
-    this->standardize();
-  }
-
+  this->standardize();
   createBuffers();
 }
 
-void Model::render(int numTriangles) const {
+void Model::render() const {
   abcg::glBindVertexArray(m_VAO);
 
-  const auto numIndices{(numTriangles < 0) ? m_indices.size()
-                                           : numTriangles * 3};
+  const auto numIndices{m_indices.size()};
 
   abcg::glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(numIndices),
                        GL_UNSIGNED_INT, nullptr);

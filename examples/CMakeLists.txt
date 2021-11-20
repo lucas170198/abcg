@@ -1,2 +1,2 @@
 add_subdirectory(helloworld)
-add_subdirectory(viewer1)
+add_subdirectory(rubrikcube)
