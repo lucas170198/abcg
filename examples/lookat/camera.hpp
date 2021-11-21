@@ -14,6 +14,10 @@ class Camera {
   void dolly(float speed);
   void truck(float speed);
   void pan(float speed);
+  void jump(float speed);
+  glm::vec3 getForward();
+  glm::vec3 getLeft();
+
 
  private:
   friend OpenGLWindow;

@@ -2,12 +2,19 @@
 #define GROUND_HPP_
 
 #include "abcg.hpp"
+#include <glm/gtx/fast_trigonometry.hpp>
+#include <glm/gtx/hash.hpp>
 
 class Ground {
  public:
   void initializeGL(GLuint program);
-  void paintGL();
+  void paintGL(); 
   void terminateGL();
+  const glm::vec3 m_envLimits{5.0f, 1.0f, 5.0f};
+  const float floorLevel{0.5f};
+ 
+ 
+
 
  private:
   GLuint m_VAO{};

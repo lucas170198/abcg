@@ -1,6 +1,8 @@
 #include "ground.hpp"
 
 #include <cppitertools/itertools.hpp>
+#include <glm/gtx/fast_trigonometry.hpp>
+#include <glm/gtx/hash.hpp>
 
 void Ground::initializeGL(GLuint program) {
   // Unit quad on the xz plane
@@ -35,19 +37,14 @@ void Ground::initializeGL(GLuint program) {
 
 void Ground::paintGL() {
   // Draw a grid of tiles centered on the xz plane
-  const int N{5};
-
   abcg::glBindVertexArray(m_VAO);
-  for (const auto z : iter::range(-N, N + 1)) {
-    for (const auto x : iter::range(-N, N + 1)) {
+  for (const auto z : iter::range(-m_envLimits.z, m_envLimits.z + 1)) {
+    for (const auto x : iter::range(-m_envLimits.x, m_envLimits.x + 1)) {
       // Set model matrix
       glm::mat4 model{1.0f};
       model = glm::translate(model, glm::vec3(x, 0.0f, z));
       abcg::glUniformMatrix4fv(m_modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
-
-      // Set color (checkerboard pattern)
-      const float gray{(z + x) % 2 == 0 ? 1.0f : 0.5f};
-      abcg::glUniform4f(m_colorLoc, gray, gray, gray, 1.0f);
+      abcg::glUniform4f(m_colorLoc, 1.0f, 1.0f, 1.0f, 1.0f);
 
       abcg::glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     }

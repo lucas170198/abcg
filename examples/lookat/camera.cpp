@@ -2,6 +2,14 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+glm::vec3 Camera::getForward(){
+  return glm::normalize(m_at - m_eye);
+}
+
+glm::vec3 Camera::getLeft(){
+  return glm::cross(m_up, getForward());
+}
+
 void Camera::computeProjectionMatrix(int width, int height) {
   m_projMatrix = glm::mat4(1.0f);
   const auto aspect{static_cast<float>(width) / static_cast<float>(height)};
@@ -14,7 +22,7 @@ void Camera::computeViewMatrix() {
 
 void Camera::dolly(float speed) {
   // Compute forward vector (view direction)
-  const glm::vec3 forward{glm::normalize(m_at - m_eye)};
+  const glm::vec3 forward{getForward()};
 
   // Move eye and center forward (speed > 0) or backward (speed < 0)
   m_eye += forward * speed;
@@ -24,10 +32,8 @@ void Camera::dolly(float speed) {
 }
 
 void Camera::truck(float speed) {
-  // Compute forward vector (view direction)
-  const glm::vec3 forward{glm::normalize(m_at - m_eye)};
   // Compute vector to the left
-  const glm::vec3 left{glm::cross(m_up, forward)};
+  const glm::vec3 left{getLeft()};
 
   // Move eye and center to the left (speed < 0) or to the right (speed > 0)
   m_at -= left * speed;
@@ -47,4 +53,9 @@ void Camera::pan(float speed) {
   m_at = transform * glm::vec4(m_at, 1.0f);
 
   computeViewMatrix();
+}
+
+void Camera::jump(float speed){
+  m_at += m_up * speed;
+  m_eye += m_up * speed;
 }

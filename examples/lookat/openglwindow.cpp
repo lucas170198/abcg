@@ -22,8 +22,14 @@ struct hash<Vertex> {
 
 void OpenGLWindow::handleEvent(SDL_Event& ev) {
   if (ev.type == SDL_KEYDOWN) {
-    if (ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w)
-      m_dollySpeed = 1.0f;
+    if (ev.key.keysym.sym == SDLK_UP || ev.key.keysym.sym == SDLK_w) {
+      const Uint8* keyboardState = SDL_GetKeyboardState(NULL);
+      m_dollySpeed = keyboardState[SDL_SCANCODE_LCTRL]
+                         ? 3.0f
+                         : 1.0f;  // press space key to run
+    }
+    if (ev.key.keysym.sym == SDLK_SPACE && m_jumpSpeed == 0.0f)
+      m_jumpSpeed = 1.0f;
     if (ev.key.keysym.sym == SDLK_DOWN || ev.key.keysym.sym == SDLK_s)
       m_dollySpeed = -1.0f;
     if (ev.key.keysym.sym == SDLK_LEFT || ev.key.keysym.sym == SDLK_a)
@@ -64,7 +70,7 @@ void OpenGLWindow::initializeGL() {
   m_ground.initializeGL(m_program);
 
   // Load model
-  loadModelFromFile(getAssetsPath() + "bunny.obj");
+  loadModelFromFile(getAssetsPath() + "Wood_Box.obj");
 
   // Generate VBO
   abcg::glGenBuffers(1, &m_VBO);
@@ -255,8 +261,36 @@ void OpenGLWindow::terminateGL() {
 void OpenGLWindow::update() {
   const float deltaTime{static_cast<float>(getDeltaTime())};
 
+  // Check for jump limits
+  if (m_jumpSpeed > 0 && m_camera.m_at.y >= m_ground.m_envLimits.y) {
+    m_jumpSpeed = -1.0f;
+  }
+
+  if (m_jumpSpeed < 0 && m_camera.m_eye.y <= m_ground.floorLevel) {
+    m_jumpSpeed = 0.0f;
+  }
+
+  // Check if the character is inside the env before dolly
+  if (m_dollySpeed != 0) {
+    glm::vec3 nextFowardPos{m_dollySpeed * deltaTime * m_camera.getForward()};
+    glm::vec3 nextEyePos = m_camera.m_eye + nextFowardPos;
+    // check for limits
+    if (nextEyePos.x >= m_ground.m_envLimits.x || nextEyePos.x <= -m_ground.m_envLimits.x ||
+        nextEyePos.z >= m_ground.m_envLimits.z || nextEyePos.z <= -m_ground.m_envLimits.z)
+      m_dollySpeed = 0.0f;
+  }
+
+  if(m_truckSpeed != 0){
+    glm::vec3 nextFowardPos{m_truckSpeed * deltaTime * m_camera.getLeft()};
+    glm::vec3 nextEyePos = m_camera.m_eye - nextFowardPos;
+    // check for limits
+    if (nextEyePos.x >= m_ground.m_envLimits.x || nextEyePos.x <= -m_ground.m_envLimits.x ||
+        nextEyePos.z >= m_ground.m_envLimits.z || nextEyePos.z <= -m_ground.m_envLimits.z)
+      m_truckSpeed = 0.0f;
+  }
   // Update LookAt camera
   m_camera.dolly(m_dollySpeed * deltaTime);
   m_camera.truck(m_truckSpeed * deltaTime);
   m_camera.pan(m_panSpeed * deltaTime);
+  m_camera.jump(m_jumpSpeed * deltaTime);
 }
