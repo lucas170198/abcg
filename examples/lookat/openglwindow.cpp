@@ -70,7 +70,7 @@ void OpenGLWindow::initializeGL() {
   m_ground.initializeGL(m_program);
 
   // Load model
-  loadModelFromFile(getAssetsPath() + "Wood_Box.obj");
+  loadModelFromFile(getAssetsPath() + "lowpolytree.obj");
 
   // Generate VBO
   abcg::glGenBuffers(1, &m_VBO);
@@ -105,6 +105,18 @@ void OpenGLWindow::initializeGL() {
 
   // End of binding to current VAO
   abcg::glBindVertexArray(0);
+
+  // setup Trees
+  Object firstTree{.position = glm::vec3(0.0f, 0.8f, -1.0f),
+                   .scale = glm::vec3(0.5f)};
+  Object secondTree{.position = glm::vec3(4.0f, 0.8f, 0.0f),
+                    .scale = glm::vec3(0.5f)};
+  Object thirdTree{.position = glm::vec3(-4.0f, 0.8f, 1.0f),
+                   .scale = glm::vec3(0.5f)};
+
+  m_objects.push_back(firstTree);
+  m_objects.push_back(secondTree);
+  m_objects.push_back(thirdTree);
 
   resizeGL(getWindowSettings().width, getWindowSettings().height);
 }
@@ -191,52 +203,63 @@ void OpenGLWindow::paintGL() {
 
   abcg::glBindVertexArray(m_VAO);
 
-  // Draw white bunny
   glm::mat4 model{1.0f};
-  model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0f));
-  model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0, 1, 0));
-  model = glm::scale(model, glm::vec3(0.5f));
 
-  abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
-  abcg::glUniform4f(colorLoc, 1.0f, 1.0f, 1.0f, 1.0f);
-  abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
-                       nullptr);
+  // green objects
+  glm::vec4 green{0.48f, 0.99f, 0.0f, 1.0f};
+  abcg::glUniform4f(colorLoc, green.x, green.y, green.z, green.a);
 
-  // Draw yellow bunny
-  model = glm::mat4(1.0);
-  model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.0f));
-  model = glm::scale(model, glm::vec3(0.5f));
+  // drawing objects
+  for (auto& obj : m_objects) {
+    model = glm::mat4(1.0);
+    model = glm::translate(model, obj.position);
+    model = glm::scale(model, obj.scale);
 
-  abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
-  abcg::glUniform4f(colorLoc, 1.0f, 0.8f, 0.0f, 1.0f);
-  abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
-                       nullptr);
+    abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
+    abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+                         nullptr);
+  }
 
-  // Draw blue bunny
-  model = glm::mat4(1.0);
-  model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
-  model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
-  model = glm::scale(model, glm::vec3(0.5f));
+  // // First tree
+  // model = glm::mat4(1.0);
+  // model = glm::translate(model, glm::vec3(0.0f, 0.8f, -1.0f));
+  // model = glm::scale(model, glm::vec3(0.5f));
 
-  abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
-  abcg::glUniform4f(colorLoc, 0.0f, 0.8f, 1.0f, 1.0f);
-  abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
-                       nullptr);
+  // abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
+  // abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+  //                      nullptr);
 
-  // Draw red bunny
-  model = glm::mat4(1.0);
-  model = glm::scale(model, glm::vec3(0.1f));
+  // // Second Tree
+  // model = glm::mat4(1.0);
+  // model = glm::translate(model, glm::vec3(4.0f, 0.8f, 0.0f));
+  // model = glm::scale(model, glm::vec3(0.5f));
 
-  abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
-  abcg::glUniform4f(colorLoc, 1.0f, 0.25f, 0.25f, 1.0f);
-  abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
-                       nullptr);
+  // abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
+  // abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+  //                      nullptr);
+
+  // // Third Tree
+  // model = glm::mat4(1.0);
+  // model = glm::translate(model, glm::vec3(-4.0f, 0.8f, 1.0f));
+  // model = glm::scale(model, glm::vec3(0.5f));
+
+  // abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
+  // abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+  //                      nullptr);
+
+  // // Fourth Tree
+  // model = glm::mat4(1.0);
+  // model = glm::translate(model, glm::vec3(2.0f, 0.8f, -3.0f));
+  // model = glm::scale(model, glm::vec3(0.5f));
+
+  // abcg::glUniformMatrix4fv(modelMatrixLoc, 1, GL_FALSE, &model[0][0]);
+  // abcg::glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT,
+  //                      nullptr);
 
   abcg::glBindVertexArray(0);
 
   // Draw ground
   m_ground.paintGL();
-
   abcg::glUseProgram(0);
 }
 
@@ -275,17 +298,21 @@ void OpenGLWindow::update() {
     glm::vec3 nextFowardPos{m_dollySpeed * deltaTime * m_camera.getForward()};
     glm::vec3 nextEyePos = m_camera.m_eye + nextFowardPos;
     // check for limits
-    if (nextEyePos.x >= m_ground.m_envLimits.x || nextEyePos.x <= -m_ground.m_envLimits.x ||
-        nextEyePos.z >= m_ground.m_envLimits.z || nextEyePos.z <= -m_ground.m_envLimits.z)
+    if (nextEyePos.x >= m_ground.m_envLimits.x ||
+        nextEyePos.x <= -m_ground.m_envLimits.x ||
+        nextEyePos.z >= m_ground.m_envLimits.z ||
+        nextEyePos.z <= -m_ground.m_envLimits.z)
       m_dollySpeed = 0.0f;
   }
 
-  if(m_truckSpeed != 0){
+  if (m_truckSpeed != 0) {
     glm::vec3 nextFowardPos{m_truckSpeed * deltaTime * m_camera.getLeft()};
     glm::vec3 nextEyePos = m_camera.m_eye - nextFowardPos;
     // check for limits
-    if (nextEyePos.x >= m_ground.m_envLimits.x || nextEyePos.x <= -m_ground.m_envLimits.x ||
-        nextEyePos.z >= m_ground.m_envLimits.z || nextEyePos.z <= -m_ground.m_envLimits.z)
+    if (nextEyePos.x >= m_ground.m_envLimits.x ||
+        nextEyePos.x <= -m_ground.m_envLimits.x ||
+        nextEyePos.z >= m_ground.m_envLimits.z ||
+        nextEyePos.z <= -m_ground.m_envLimits.z)
       m_truckSpeed = 0.0f;
   }
   // Update LookAt camera

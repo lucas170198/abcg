@@ -2,6 +2,7 @@
 #define OPENGLWINDOW_HPP_
 
 #include <vector>
+#include <string>
 
 #include "abcg.hpp"
 #include "camera.hpp"
@@ -13,6 +14,11 @@ struct Vertex {
   bool operator==(const Vertex& other) const {
     return position == other.position;
   }
+};
+
+struct Object{
+  glm::vec3 position;
+  glm::vec3 scale;
 };
 
 class OpenGLWindow : public abcg::OpenGLWindow {
@@ -43,6 +49,7 @@ class OpenGLWindow : public abcg::OpenGLWindow {
 
   std::vector<Vertex> m_vertices;
   std::vector<GLuint> m_indices;
+  std::vector<Object> m_objects;
 
   void loadModelFromFile(std::string_view path);
   void update();
